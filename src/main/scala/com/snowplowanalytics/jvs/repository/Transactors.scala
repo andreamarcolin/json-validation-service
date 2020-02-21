@@ -7,8 +7,6 @@ import zio.Task
 import zio.interop.catz._
 
 object Transactors {
-
   def simpleTransactor(cfg: Db): Transactor[Task] =
     fromDriverManager[Task](cfg.driver, cfg.url, cfg.user, cfg.password)
-
 }

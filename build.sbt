@@ -9,7 +9,8 @@ lazy val root = (project in file("."))
     version := "0.1.0",
     scalaVersion := "2.13.1",
     libraryDependencies ++= Build.dependencies,
-    onLoadMessage := Build.welcomeMessage
+    onLoadMessage := Build.welcomeMessage,
+    onChangedBuildSource := ReloadOnSourceChanges
   )
   .enablePlugins(
     ScalafmtPlugin
@@ -19,8 +20,8 @@ lazy val root = (project in file("."))
     crossPaths := false,
     test in assembly := {},
     assemblyMergeStrategy in assembly := {
-      case PathList("META-INF", _*)             => MergeStrategy.discard
-      case _                                    => MergeStrategy.first
+      case PathList("META-INF", _*) => MergeStrategy.discard
+      case _                        => MergeStrategy.first
     },
     publishArtifact in (Compile, packageBin) := false,
     publishArtifact in (Compile, packageDoc) := false,

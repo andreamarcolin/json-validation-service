@@ -2,7 +2,6 @@ import sbt._
 import sbt.librarymanagement.ModuleID
 
 object Build {
-
   object Versions {
     val zio        = "1.0.0-RC17"
     val doobie     = "0.8.8"
@@ -54,5 +53,4 @@ object Build {
         |${item("packageJar")}    - Package the app as a fat JAR
       """.stripMargin
   }
-
 }

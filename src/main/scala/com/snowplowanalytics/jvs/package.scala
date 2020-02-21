@@ -8,7 +8,6 @@ import zio.ZManaged
 import zio.interop.catz._
 
 package object jvs {
-
   implicit def circeAppTaskJsonDecoder[A: Decoder]: EntityDecoder[AppTask, A] = jsonOf[AppTask, A]
   implicit def circeAppTaskJsonEncoder[A: Encoder]: EntityEncoder[AppTask, A] = jsonEncoderOf[AppTask, A]
 
@@ -18,5 +17,4 @@ package object jvs {
     def >>*[E1 >: E, B](that: ZManaged[A, E1, B]): ZManaged[R, E1, B] =
       zm >>> that
   }
-
 }

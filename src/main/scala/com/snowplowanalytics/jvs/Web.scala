@@ -11,12 +11,12 @@ import org.http4s.server.Router
 import zio.interop.catz._
 
 object Web {
-
   def buildRouter(baseUrl: String): HttpApp[AppTask] = middleware(router(baseUrl))
 
   private def router(baseUrl: String): HttpRoutes[AppTask] =
     Router[AppTask](
-      s"$baseUrl/health"     -> HealthController.routes
+      s"$baseUrl/health" -> HealthController.routes,
+      s"$baseUrl/schema" -> SchemaController.routes
     )
 
   private def middleware: HttpRoutes[AppTask] => HttpApp[AppTask] =
@@ -24,8 +24,6 @@ object Web {
       ((http: HttpRoutes[AppTask]) => CORS(http)) andThen
       ((http: HttpRoutes[AppTask]) => orNotFound(http))
 
-
   private def orNotFound[A](routes: HttpRoutes[AppTask]): HttpApp[AppTask] =
     Kleisli(a => routes.run(a).getOrElse(Response.notFound[AppTask].withEntity[AppError](ResourceNotFound)))
-
 }
