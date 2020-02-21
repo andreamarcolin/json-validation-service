@@ -5,7 +5,7 @@ import com.snowplowanalytics.jvs.config.Config
 import com.snowplowanalytics.jvs.config.PureconfigConfigService._
 import fs2.Stream.Compiler._
 import com.snowplowanalytics.jvs.Web._
-import com.snowplowanalytics.jvs.repository.SchemaRepository
+import com.snowplowanalytics.jvs.repository._
 import org.http4s.server.blaze.BlazeServerBuilder
 import zio._
 import zio.blocking.Blocking
@@ -25,9 +25,10 @@ object Main extends ManagedApp {
         _ => ZManaged.succeed(0)
       )
 
-  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config] =
+  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config with SchemaRepository] =
     ZManaged.environment[ZEnv] >>*
-      withPureconfigConfig
+      withPureconfigConfig >>*
+      withDoobieRepositories
 
   private def serve: ZManaged[AppEnvironment, Throwable, Unit] =
     for {
