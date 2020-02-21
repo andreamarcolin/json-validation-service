@@ -14,7 +14,7 @@ sbt packageJar
 
 ## Running the service locally
 The project ships with a docker-compose file, which will pull and start service dependencies (namely PostgreSQL) 
-It will also preload some configurations and SQL scripts to add db schemas, db tables and some sample data.
+It will also preload some SQL scripts to add a db schema and db tables.
 
 Finally, it will build a docker image for the project bundling it from a pre-assembled JAR. 
 
