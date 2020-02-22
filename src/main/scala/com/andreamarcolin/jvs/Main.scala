@@ -5,6 +5,8 @@ import com.andreamarcolin.jvs.config.Config
 import com.andreamarcolin.jvs.config.PureconfigConfigService._
 import fs2.Stream.Compiler._
 import com.andreamarcolin.jvs.Web._
+import com.andreamarcolin.jvs.logger.Logger
+import com.andreamarcolin.jvs.logger.Slf4jLogger._
 import com.andreamarcolin.jvs.repository._
 import org.http4s.server.blaze.BlazeServerBuilder
 import zio._
@@ -14,7 +16,7 @@ import zio.console._
 import zio.interop.catz._
 
 object Main extends ManagedApp {
-  type AppEnvironment = Clock with Console with Blocking with Config with SchemaRepository
+  type AppEnvironment = Clock with Console with Blocking with Config with Logger with SchemaRepository
   type AppTask[A]     = RIO[AppEnvironment, A]
 
   override def run(args: List[String]): ZManaged[ZEnv, Nothing, Int] =
@@ -25,9 +27,10 @@ object Main extends ManagedApp {
         _ => ZManaged.succeed(0)
       )
 
-  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config with SchemaRepository] =
+  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config with Logger with SchemaRepository] =
     ZManaged.environment[ZEnv] >>*
       withPureconfigConfig >>*
+      withSlf4jLogger >>*
       withDoobieRepositories
 
   private def serve: ZManaged[AppEnvironment, Throwable, Unit] =
