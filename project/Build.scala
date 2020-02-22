@@ -2,15 +2,14 @@ import sbt._
 import sbt.librarymanagement.ModuleID
 
 object Build {
-
   object Versions {
     val zio        = "1.0.0-RC17"
     val doobie     = "0.8.8"
-    val circe      = "0.12.2"
+    val circe      = "0.13.0"
     val cats       = "2.0.0"
     val catsEffect = "2.0.0"
     val pureConfig = "0.12.2"
-    val http4s     = "0.21.0-M6"
+    val http4s     = "0.21.1"
   }
 
   val dependencies: Seq[ModuleID] = Seq(
@@ -18,6 +17,7 @@ object Build {
     "dev.zio"                    %% "zio-interop-cats"     % (Versions.catsEffect + ".0-RC10"),
     "dev.zio"                    %% "zio-macros-core"      % "0.6.2",
     "org.tpolecat"               %% "doobie-core"          % Versions.doobie,
+    "org.tpolecat"               %% "doobie-postgres"      % Versions.doobie,
     "org.http4s"                 %% "http4s-dsl"           % Versions.http4s,
     "org.http4s"                 %% "http4s-blaze-client"  % Versions.http4s,
     "org.http4s"                 %% "http4s-blaze-server"  % Versions.http4s,
@@ -54,5 +54,4 @@ object Build {
         |${item("packageJar")}    - Package the app as a fat JAR
       """.stripMargin
   }
-
 }
