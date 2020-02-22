@@ -1,4 +1,4 @@
-package com.snowplowanalytics.jvs.model
+package com.snowplowanalytics.jvs.model.http
 
 case class AppStatus(status: Status, db: Status)
 object AppStatus {

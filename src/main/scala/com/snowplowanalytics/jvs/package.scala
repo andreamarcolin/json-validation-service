@@ -1,15 +1,12 @@
 package com.snowplowanalytics
 
 import com.snowplowanalytics.jvs.Main.AppTask
-import io.circe.{Decoder, Encoder, Printer}
-import org.http4s.{EntityDecoder, EntityEncoder}
-import org.http4s.circe.{jsonEncoderWithPrinterOf, jsonOf}
+import io.circe.{Encoder, Printer}
+import org.http4s.EntityEncoder
+import org.http4s.circe.jsonEncoderWithPrinterOf
 import zio.ZManaged
-import zio.interop.catz._
 
 package object jvs {
-  implicit def circeAppTaskJsonDecoder[A: Decoder]: EntityDecoder[AppTask, A] =
-    jsonOf[AppTask, A]
   implicit def circeAppTaskJsonEncoder[A: Encoder]: EntityEncoder[AppTask, A] =
     jsonEncoderWithPrinterOf[AppTask, A](Printer.spaces2.copy(dropNullValues = true))
 
