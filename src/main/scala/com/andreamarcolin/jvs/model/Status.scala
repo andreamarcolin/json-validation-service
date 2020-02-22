@@ -1,4 +1,4 @@
-package com.snowplowanalytics.jvs.model.http
+package com.andreamarcolin.jvs.model
 
 sealed trait Status
 object Status {

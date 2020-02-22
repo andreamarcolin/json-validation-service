@@ -1,4 +1,4 @@
-package com.snowplowanalytics.jvs.repository
+package com.andreamarcolin.jvs.repository
 
 import io.circe.Json
 import zio.RIO

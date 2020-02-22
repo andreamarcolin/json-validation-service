@@ -26,6 +26,7 @@ object Build {
     "io.circe"                   %% "circe-generic"        % Versions.circe,
     "io.circe"                   %% "circe-generic-extras" % Versions.circe,
     "io.circe"                   %% "circe-parser"         % Versions.circe,
+    "io.circe"                   %% "circe-json-schema"    % "0.1.0",
     "org.typelevel"              %% "cats-core"            % Versions.cats,
     "org.typelevel"              %% "cats-effect"          % Versions.catsEffect,
     "com.github.pureconfig"      %% "pureconfig"           % Versions.pureConfig,

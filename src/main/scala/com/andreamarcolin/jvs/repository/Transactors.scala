@@ -1,6 +1,6 @@
-package com.snowplowanalytics.jvs.repository
+package com.andreamarcolin.jvs.repository
 
-import com.snowplowanalytics.jvs.config.Config.Db
+import com.andreamarcolin.jvs.config.Config.Db
 import doobie.util.transactor.Transactor
 import doobie.util.transactor.Transactor.fromDriverManager
 import zio.Task

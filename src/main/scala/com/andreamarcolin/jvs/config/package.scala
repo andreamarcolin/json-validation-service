@@ -1,4 +1,4 @@
-package com.snowplowanalytics.jvs
+package com.andreamarcolin.jvs
 
 import zio.{RIO, ZIO}
 

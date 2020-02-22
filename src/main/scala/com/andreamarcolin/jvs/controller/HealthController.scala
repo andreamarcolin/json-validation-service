@@ -1,10 +1,10 @@
-package com.snowplowanalytics.jvs.controller
+package com.andreamarcolin.jvs.controller
 
-import com.snowplowanalytics.jvs.Main.AppTask
-import com.snowplowanalytics.jvs.config
-import com.snowplowanalytics.jvs.config.Config
-import com.snowplowanalytics.jvs.model.http._
-import com.snowplowanalytics.jvs.repository.Transactors
+import com.andreamarcolin.jvs.Main.AppTask
+import com.andreamarcolin.jvs.config
+import com.andreamarcolin.jvs.config.Config
+import com.andreamarcolin.jvs.model.{AppStatus, Status}
+import com.andreamarcolin.jvs.repository.Transactors
 import doobie.implicits._
 import io.circe.generic.auto._
 import org.http4s.dsl.Http4sDsl

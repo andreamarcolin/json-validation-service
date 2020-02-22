@@ -1,4 +1,4 @@
-package com.snowplowanalytics.jvs.config
+package com.andreamarcolin.jvs.config
 
 import zio.RIO
 
