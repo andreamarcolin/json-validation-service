@@ -1,6 +1,6 @@
-package com.snowplowanalytics
+package com.andreamarcolin
 
-import com.snowplowanalytics.jvs.Main.AppTask
+import com.andreamarcolin.jvs.Main.AppTask
 import io.circe.{Encoder, Printer}
 import org.http4s.EntityEncoder
 import org.http4s.circe.jsonEncoderWithPrinterOf

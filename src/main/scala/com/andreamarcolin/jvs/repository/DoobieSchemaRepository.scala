@@ -1,7 +1,7 @@
-package com.snowplowanalytics.jvs.repository
+package com.andreamarcolin.jvs.repository
 
-import com.snowplowanalytics.jvs.repository.DoobieSchemaRepository.SQL
-import com.snowplowanalytics.jvs.repository.Exceptions.{ConflictException, ResourceNotFoundException}
+import com.andreamarcolin.jvs.repository.DoobieSchemaRepository.SQL
+import com.andreamarcolin.jvs.Exceptions.{ConflictException, ResourceNotFoundException}
 import doobie.{Query0, Update0}
 import doobie.implicits._
 import doobie.postgres._

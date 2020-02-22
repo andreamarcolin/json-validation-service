@@ -1,13 +1,13 @@
-package com.snowplowanalytics.jvs.controller
+package com.andreamarcolin.jvs.controller
 
 import cats.implicits._
-import com.snowplowanalytics.jvs._
-import com.snowplowanalytics.jvs.Main.AppTask
-import com.snowplowanalytics.jvs.model.http.AppResponse._
-import com.snowplowanalytics.jvs.model.http.AppResponse.Action._
-import com.snowplowanalytics.jvs.model.http.AppResponse.ActionStatus._
-import com.snowplowanalytics.jvs.repository.schemaRepository._
-import com.snowplowanalytics.jvs.repository.Exceptions.{ConflictException, ResourceNotFoundException}
+import com.andreamarcolin.jvs._
+import com.andreamarcolin.jvs.Main.AppTask
+import com.andreamarcolin.jvs.model.AppResponse._
+import com.andreamarcolin.jvs.model.AppResponse.Action._
+import com.andreamarcolin.jvs.model.AppResponse.ActionStatus._
+import com.andreamarcolin.jvs.repository.schemaRepository._
+import com.andreamarcolin.jvs.Exceptions.{ConflictException, ResourceNotFoundException}
 import io.circe.parser.parse
 import io.circe.ParsingFailure
 import org.http4s._
@@ -17,7 +17,7 @@ import zio.ZIO
 
 object SchemaController extends Http4sDsl[AppTask] {
   def routes: HttpRoutes[AppTask] = HttpRoutes.of[AppTask] {
-    case GET -> Root / schemaId => handleGet(schemaId)
+    case GET -> Root / schemaId        => handleGet(schemaId)
     case req @ POST -> Root / schemaId => req.decode[String](handlePost(schemaId))
   }
 
@@ -31,7 +31,7 @@ object SchemaController extends Http4sDsl[AppTask] {
       .flatMap(Ok(_))
       .catchAll {
         case ResourceNotFoundException => notFound
-        case _ => internalServerError
+        case _                         => internalServerError
       }
   }
 
@@ -49,7 +49,7 @@ object SchemaController extends Http4sDsl[AppTask] {
       .fromEither(parse(requestBody))
       .flatMap(
         saveSchema(schemaId, _)
-          .flatMap(_ => created)
+          .zipRight(created)
           .catchAll {
             case ConflictException => conflict
             case _                 => internalServerError

@@ -1,7 +1,7 @@
-package com.snowplowanalytics.jvs
+package com.andreamarcolin.jvs
 
 import cats.implicits._
-import com.snowplowanalytics.jvs.config.Config
+import com.andreamarcolin.jvs.config.Config
 import doobie.util.meta.Meta
 import io.circe._
 import org.postgresql.util.PGobject

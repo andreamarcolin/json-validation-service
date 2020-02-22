@@ -1,11 +1,11 @@
-package com.snowplowanalytics.jvs
+package com.andreamarcolin.jvs
 
 import cats.effect._
-import com.snowplowanalytics.jvs.config.Config
-import com.snowplowanalytics.jvs.config.PureconfigConfigService._
+import com.andreamarcolin.jvs.config.Config
+import com.andreamarcolin.jvs.config.PureconfigConfigService._
 import fs2.Stream.Compiler._
-import com.snowplowanalytics.jvs.Web._
-import com.snowplowanalytics.jvs.repository._
+import com.andreamarcolin.jvs.Web._
+import com.andreamarcolin.jvs.repository._
 import org.http4s.server.blaze.BlazeServerBuilder
 import zio._
 import zio.blocking.Blocking

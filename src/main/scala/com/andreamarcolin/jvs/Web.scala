@@ -1,10 +1,10 @@
-package com.snowplowanalytics.jvs
+package com.andreamarcolin.jvs
 
 import cats.implicits._
 import cats.data.Kleisli
-import com.snowplowanalytics.jvs.Main.AppTask
-import com.snowplowanalytics.jvs.controller._
-import com.snowplowanalytics.jvs.model.http.AppResponse._
+import com.andreamarcolin.jvs.Main.AppTask
+import com.andreamarcolin.jvs.controller._
+import com.andreamarcolin.jvs.model.AppResponse._
 import org.http4s.{HttpApp, HttpRoutes}
 import org.http4s.server.middleware.{AutoSlash, CORS}
 import org.http4s.server.Router
@@ -17,7 +17,8 @@ object Web {
   private def router(baseUrl: String): HttpRoutes[AppTask] =
     Router[AppTask](
       s"$baseUrl/health" -> HealthController.routes,
-      s"$baseUrl/schema" -> SchemaController.routes
+      s"$baseUrl/schema" -> SchemaController.routes,
+      s"$baseUrl/validate" -> ValidationController.routes
     )
 
   private def middleware: HttpRoutes[AppTask] => HttpApp[AppTask] =

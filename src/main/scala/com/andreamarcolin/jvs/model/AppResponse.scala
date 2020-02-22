@@ -1,9 +1,9 @@
-package com.snowplowanalytics.jvs.model.http
+package com.andreamarcolin.jvs.model
 
 import cats.implicits._
 import io.circe.generic.auto._
-import com.snowplowanalytics.jvs.model.http.AppResponse._
-import com.snowplowanalytics.jvs.Main.AppTask
+import AppResponse._
+import com.andreamarcolin.jvs.Main.AppTask
 import org.http4s.{Response, Status}
 import zio.interop.catz._
 

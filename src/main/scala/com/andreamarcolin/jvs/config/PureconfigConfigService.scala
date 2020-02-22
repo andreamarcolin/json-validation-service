@@ -1,6 +1,6 @@
-package com.snowplowanalytics.jvs.config
+package com.andreamarcolin.jvs.config
 
-import com.snowplowanalytics.jvs.config.Config.Root
+import com.andreamarcolin.jvs.config.Config.Root
 import pureconfig.ConfigSource
 import pureconfig.error.ConfigReaderException
 import zio.{Task, UIO, ZIO, ZManaged}

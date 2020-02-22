@@ -4,12 +4,13 @@ addCommandAlias("packageJar", "assembly")
 
 lazy val root = (project in file("."))
   .settings(
-    organization := "com.snowplowanalytics",
+    organization := "com.andreamarcolin",
     name := "jvs",
     version := "0.1.0",
     scalaVersion := "2.13.1",
     libraryDependencies ++= Build.dependencies,
     onLoadMessage := Build.welcomeMessage,
+    resolvers += "jitpack".at("https://jitpack.io"),
     onChangedBuildSource := ReloadOnSourceChanges
   )
   .enablePlugins(
