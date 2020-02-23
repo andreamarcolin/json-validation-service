@@ -8,13 +8,14 @@ import com.andreamarcolin.jvs.model.AppResponse.Action._
 import com.andreamarcolin.jvs.model.AppResponse.ActionStatus._
 import com.andreamarcolin.jvs.repository.schemaRepository._
 import com.andreamarcolin.jvs.Exceptions.{ConflictException, ResourceNotFoundException}
+import com.andreamarcolin.jvs.repository.SchemaRepository
 import io.circe.parser.parse
 import io.circe.ParsingFailure
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
+import zio.{URIO, ZIO}
 import zio.interop.catz._
-import zio.ZIO
-import zio.logging.{log, logThrowable}
+import zio.logging.{log, logThrowable, Logging}
 import zio.logging.LogLevel.Debug
 
 object SchemaController extends Http4sDsl[AppTask] {
@@ -23,43 +24,38 @@ object SchemaController extends Http4sDsl[AppTask] {
     case req @ POST -> Root / schemaId => req.decode[String](handlePost(schemaId))
   }
 
-  def handleGet(schemaId: String): AppTask[Response[AppTask]] = {
+  def handleGet(schemaId: String): URIO[SchemaRepository with Logging, Response[AppTask]] = {
     val notFound =
       httpResponse(NotFound, downloadSchema, schemaId, error, "JSON Schema not found".some)
     val internalServerError =
       httpResponse(InternalServerError, downloadSchema, schemaId, error, "Oops! Something went wrong".some)
 
-    getSchema(schemaId)
-      .flatMap(Ok(_))
-      .catchAll {
-        case ResourceNotFoundException => notFound
-        case _                         => internalServerError
-      }
+    (for {
+      schema <- getSchema(schemaId)
+      ok     = Response[AppTask](Ok).withEntity(schema)
+    } yield ok).catchAll {
+      case ResourceNotFoundException => log(Debug)(s"JSON Schema with id '$schemaId' not found").as(notFound)
+      case ex                        => logThrowable(ex).as(internalServerError)
+    }
   }
 
-  def handlePost(schemaId: String)(requestBody: String): AppTask[Response[AppTask]] = {
+  def handlePost(schemaId: String)(requestBody: String): URIO[SchemaRepository with Logging, Response[AppTask]] = {
     val created =
       httpResponse(Created, uploadSchema, schemaId, ActionStatus.success)
-    val badRequest =
-      httpResponse(BadRequest, uploadSchema, schemaId, error, "Invalid JSON".some)
     val conflict =
       httpResponse(Conflict, uploadSchema, schemaId, error, "A JSON Schema with this ID already exists".some)
+    val badRequest =
+      httpResponse(BadRequest, uploadSchema, schemaId, error, "Invalid JSON".some)
     val internalServerError =
       httpResponse(InternalServerError, uploadSchema, schemaId, error, "Oops! Something went wrong".some)
 
-    ZIO
-      .fromEither(parse(requestBody))
-      .flatMap(
-        saveSchema(schemaId, _)
-          .zipRight(created)
-          .catchAll {
-            case ConflictException => log(Debug)(s"JSON Schema with id $schemaId already exists") *> conflict
-            case ex                => logThrowable(ex) *> internalServerError
-          }
-      )
-      .catchAll {
-        case ParsingFailure(msg, _) => log(Debug)(s"Invalid JSON: $msg") *> badRequest
-        case ex                     => logThrowable(ex) *> internalServerError
-      }
+    (for {
+      schema <- ZIO.fromEither(parse(requestBody))
+      _      <- saveSchema(schemaId, schema)
+    } yield created).catchAll {
+      case ConflictException      => log(Debug)(s"JSON Schema with id $schemaId already exists").as(conflict)
+      case ParsingFailure(msg, _) => log(Debug)(s"Invalid JSON: $msg").as(badRequest)
+      case ex                     => logThrowable(ex).as(internalServerError)
+    }
   }
 }

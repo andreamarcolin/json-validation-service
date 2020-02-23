@@ -5,7 +5,6 @@ import io.circe.generic.auto._
 import AppResponse._
 import com.andreamarcolin.jvs.Main.AppTask
 import org.http4s.{Response, Status}
-import zio.interop.catz._
 
 case class AppResponse(
     action: Option[Action],
@@ -33,11 +32,8 @@ object AppResponse {
       id: String,
       actionStatus: ActionStatus,
       message: Option[String] = none
-  ): AppTask[Response[AppTask]] =
-    buildHttpResponse(httpStatus, message, action.some, id.some, actionStatus.some).pure[AppTask]
-
-  def genericHttpResponse(httpStatus: Status, message: String): AppTask[Response[AppTask]] =
-    buildHttpResponse(httpStatus, message.some).pure[AppTask]
+  ): Response[AppTask] =
+    buildHttpResponse(httpStatus, message, action.some, id.some, actionStatus.some)
 
   def buildHttpResponse(
       httpStatus: Status,
