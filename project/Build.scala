@@ -16,6 +16,7 @@ object Build {
     "dev.zio"                    %% "zio"                  % Versions.zio,
     "dev.zio"                    %% "zio-interop-cats"     % (Versions.catsEffect + ".0-RC10"),
     "dev.zio"                    %% "zio-macros-core"      % "0.6.2",
+    "dev.zio"                    %% "zio-logging-slf4j"    % "0.2.1",
     "org.tpolecat"               %% "doobie-core"          % Versions.doobie,
     "org.tpolecat"               %% "doobie-postgres"      % Versions.doobie,
     "org.http4s"                 %% "http4s-dsl"           % Versions.http4s,
@@ -32,20 +33,15 @@ object Build {
     "com.github.pureconfig"      %% "pureconfig"           % Versions.pureConfig,
     "com.lihaoyi"                %% "sourcecode"           % "0.1.7",
     "org.postgresql"             % "postgresql"            % "42.2.8",
-    "org.slf4j"                  % "slf4j-api"             % "1.7.30",
-    "ch.qos.logback"             % "logback-core"          % "1.2.3",
-    "ch.qos.logback"             % "logback-classic"       % "1.2.3",
     "com.github.java-json-tools" % "json-schema-validator" % "2.2.12",
     compilerPlugin("org.typelevel" %% "kind-projector"     % "0.11.0" cross CrossVersion.full),
     compilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1")
   )
 
   val welcomeMessage: String = {
-    import scala.Console
+    import scala.Console._
 
-    def header(text: String): String = s"${Console.YELLOW}$text${Console.RESET}"
-
-    def item(text: String): String = s"${Console.GREEN}▶ ${Console.CYAN}$text${Console.RESET}"
+    def item(text: String): String = s"${GREEN}▶ ${CYAN}$text${RESET}"
 
     s"""|Useful sbt tasks:
         |${item("check")}         - Check source files formatting using scalafmt

@@ -13,12 +13,13 @@ import io.circe.schema.Schema
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import zio.ZIO
+import zio.logging._
 import zio.interop.catz._
+import zio.logging.LogLevel._
 
 object ValidationController extends Http4sDsl[AppTask] {
-
   def routes: HttpRoutes[AppTask] = HttpRoutes.of[AppTask] {
-    case req@POST -> Root / schemaId => req.decode[String](handleValidation(schemaId))
+    case req @ POST -> Root / schemaId => req.decode[String](handleValidation(schemaId))
   }
 
   def handleValidation(schemaId: String)(requestBody: String): AppTask[Response[AppTask]] = {
@@ -35,26 +36,27 @@ object ValidationController extends Http4sDsl[AppTask] {
 
     ZIO
       .fromEither(parse(requestBody))
-      .flatMap(json =>
-        getSchema(schemaId)
-          .flatMap(schema =>
-            ZIO
-              .fromEither(Schema.load(schema).validate(json.deepDropNullValues).toEither)
-              .mapError(errors => ValidationException(errors.toList.map(_.getMessage).mkString("; ")))
-              .zipRight(valid)
-              .catchAll {
-                case ValidationException(msg) => invalid(msg)
-              }
-          )
-          .catchAll {
-            case ResourceNotFoundException => notFound
-            case _ => internalServerError
-          }
+      .flatMap(
+        json =>
+          getSchema(schemaId)
+            .flatMap(
+              schema =>
+                ZIO
+                  .fromEither(Schema.load(schema).validate(json.deepDropNullValues).toEither)
+                  .mapError(errors => ValidationException(errors.toList.map(_.getMessage).mkString("; ")))
+                  .zipRight(valid)
+                  .catchAll {
+                    case ValidationException(msg) => invalid(msg)
+                  }
+            )
+            .catchAll {
+              case ResourceNotFoundException => log(Debug)(s"JSON Schema with id '$schemaId' not found") *> notFound
+              case ex                        => logThrowable(ex) *> internalServerError
+            }
       )
       .catchAll {
-        case ParsingFailure(_, _) => badRequest
-        case _ => internalServerError
+        case ParsingFailure(msg, _) => log(Debug)(s"Invalid JSON: $msg") *> badRequest
+        case ex                     => logThrowable(ex) *> internalServerError
       }
   }
-
 }

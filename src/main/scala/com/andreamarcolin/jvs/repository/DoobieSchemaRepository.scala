@@ -11,7 +11,8 @@ import io.circe.Json
 import zio.{RIO, Task}
 import zio.interop.catz._
 
-class DoobieSchemaRepository(xa: Transactor[Task]) extends SchemaRepository.Service[Any] {
+final class DoobieSchemaRepository(xa: Transactor[Task]) extends SchemaRepository.Service[Any] { self =>
+
   override def getSchema(schemaId: String): RIO[Any, Json] =
     SQL
       .get(schemaId)
