@@ -23,7 +23,7 @@ object ValidationController extends Http4sDsl[AppTask] {
     case req @ POST -> Root / schemaId => req.decode[String](handleValidation(schemaId))
   }
 
-  def handleValidation(schemaId: String)(requestBody: String): URIO[SchemaRepository with Logging, Response[AppTask]] = {
+  def handleValidation(schemaId: String)(reqBody: String): URIO[SchemaRepository with Logging, Response[AppTask]] = {
     val validationOk =
       httpResponse(Ok, validateDocument, schemaId, success)
     val validationError: String => Response[AppTask] =
@@ -36,7 +36,7 @@ object ValidationController extends Http4sDsl[AppTask] {
       httpResponse(InternalServerError, validateDocument, schemaId, error, "Oops! Something went wrong".some)
 
     (for {
-      json   <- ZIO.fromEither(parse(requestBody))
+      json   <- ZIO.fromEither(parse(reqBody))
       schema <- getSchema(schemaId)
       _      <- validate(json, schema)
     } yield validationOk).catchAll {

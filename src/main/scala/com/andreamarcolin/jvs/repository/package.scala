@@ -2,10 +2,12 @@ package com.andreamarcolin.jvs
 
 import cats.implicits._
 import com.andreamarcolin.jvs.config.Config
+import com.andreamarcolin.jvs.repository.Transactors._
 import doobie.util.meta.Meta
 import io.circe._
 import org.postgresql.util.PGobject
 import zio.{RIO, ZIO, ZManaged}
+import zio.blocking.Blocking
 import zio.macros.delegate.Mix
 
 package object repository {
@@ -16,12 +18,14 @@ package object repository {
       ZIO.accessM(_.schemaRepository.saveSchema(schemaId, schema))
   }
 
-  def withDoobieRepositories[R <: Config](
+  def withDoobieRepositories[R <: Blocking with Config](
       implicit ev: R Mix SchemaRepository
   ): ZManaged[R, Throwable, R with SchemaRepository] =
     for {
       cfg        <- config.db.toManaged_
-      transactor = Transactors.simpleTransactor(cfg)
+      blockingEC <- ZIO.environment[Blocking].flatMap(_.blocking.blockingExecutor.map(_.asEC)).toManaged_
+      mainEC     <- ZIO.runtime[Blocking].map(_.platform.executor.asEC).toManaged_
+      transactor <- pooledTransactor(cfg, mainEC, blockingEC)
       repos = new SchemaRepository {
         val schemaRepository = new DoobieSchemaRepository(transactor)
       }

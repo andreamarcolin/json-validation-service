@@ -19,6 +19,7 @@ object Build {
     "dev.zio"                    %% "zio-logging-slf4j"    % "0.2.1",
     "org.tpolecat"               %% "doobie-core"          % Versions.doobie,
     "org.tpolecat"               %% "doobie-postgres"      % Versions.doobie,
+    "org.tpolecat"               %% "doobie-hikari"        % Versions.doobie,
     "org.http4s"                 %% "http4s-dsl"           % Versions.http4s,
     "org.http4s"                 %% "http4s-blaze-client"  % Versions.http4s,
     "org.http4s"                 %% "http4s-blaze-server"  % Versions.http4s,
