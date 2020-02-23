@@ -8,13 +8,10 @@ import doobie.postgres._
 import doobie.util.log.LogHandler
 import doobie.util.transactor.Transactor
 import io.circe.Json
-import org.slf4j.LoggerFactory
 import zio.{RIO, Task}
 import zio.interop.catz._
 
 final class DoobieSchemaRepository(xa: Transactor[Task]) extends SchemaRepository.Service[Any] { self =>
-
-  implicit val logHandler: LogHandler = buildSlf4jLogHandler(LoggerFactory.getLogger(self.getClass))
 
   override def getSchema(schemaId: String): RIO[Any, Json] =
     SQL

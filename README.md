@@ -1,5 +1,6 @@
 # JSON Validation Service
-A simple RESTful microservice which allows to validate JSON documents against user supplied JSON Schemas
+A simple RESTful microservice which allows to validate JSON documents against user supplied JSON Schemas.
+Based on a pure FP Scala stack (zio, cats, doobie, circe, pureconfig)
 
 ## Requirements
 - sbt

@@ -14,6 +14,8 @@ import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import zio.interop.catz._
 import zio.ZIO
+import zio.logging.{log, logThrowable}
+import zio.logging.LogLevel.Debug
 
 object SchemaController extends Http4sDsl[AppTask] {
   def routes: HttpRoutes[AppTask] = HttpRoutes.of[AppTask] {
@@ -51,14 +53,13 @@ object SchemaController extends Http4sDsl[AppTask] {
         saveSchema(schemaId, _)
           .zipRight(created)
           .catchAll {
-            case ConflictException => conflict
-            case _                 => internalServerError
+            case ConflictException => log(Debug)(s"JSON Schema with id $schemaId already exists") *> conflict
+            case ex                => logThrowable(ex) *> internalServerError
           }
       )
       .catchAll {
-        case ParsingFailure(_, _) => badRequest
-        case _                    => internalServerError
+        case ParsingFailure(msg, _) => log(Debug)(s"Invalid JSON: $msg") *> badRequest
+        case ex                     => logThrowable(ex) *> internalServerError
       }
   }
-
 }

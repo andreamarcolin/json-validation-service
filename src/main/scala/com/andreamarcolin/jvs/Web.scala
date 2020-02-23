@@ -16,8 +16,8 @@ object Web {
 
   private def router(baseUrl: String): HttpRoutes[AppTask] =
     Router[AppTask](
-      s"$baseUrl/health" -> HealthController.routes,
-      s"$baseUrl/schema" -> SchemaController.routes,
+      s"$baseUrl/health"   -> HealthController.routes,
+      s"$baseUrl/schema"   -> SchemaController.routes,
       s"$baseUrl/validate" -> ValidationController.routes
     )
 

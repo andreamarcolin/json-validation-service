@@ -5,8 +5,6 @@ import com.andreamarcolin.jvs.config.Config
 import com.andreamarcolin.jvs.config.PureconfigConfigService._
 import fs2.Stream.Compiler._
 import com.andreamarcolin.jvs.Web._
-import com.andreamarcolin.jvs.logger.Logger
-import com.andreamarcolin.jvs.logger.Slf4jLogger._
 import com.andreamarcolin.jvs.repository._
 import org.http4s.server.blaze.BlazeServerBuilder
 import zio._
@@ -14,9 +12,12 @@ import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console._
 import zio.interop.catz._
+import zio.logging.slf4j.Slf4jLogger
+import zio.logging.Logging
+import zio.macros.delegate.Mix
 
 object Main extends ManagedApp {
-  type AppEnvironment = Clock with Console with Blocking with Config with Logger with SchemaRepository
+  type AppEnvironment = Clock with Console with Blocking with Config with Logging with SchemaRepository
   type AppTask[A]     = RIO[AppEnvironment, A]
 
   override def run(args: List[String]): ZManaged[ZEnv, Nothing, Int] =
@@ -27,7 +28,7 @@ object Main extends ManagedApp {
         _ => ZManaged.succeed(0)
       )
 
-  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config with Logger with SchemaRepository] =
+  private def buildEnvironment: ZManaged[ZEnv, Throwable, ZEnv with Config with Logging with SchemaRepository] =
     ZManaged.environment[ZEnv] >>*
       withPureconfigConfig >>*
       withSlf4jLogger >>*
@@ -45,4 +46,10 @@ object Main extends ManagedApp {
             .drain
             .toManaged_
     } yield ()
+
+  private def withSlf4jLogger[R](implicit ev: R Mix Logging): ZManaged[R, Throwable, R with Logging] =
+    for {
+      env    <- ZManaged.environment[R]
+      logger <- Slf4jLogger.make((_, message) => message).toManaged_
+    } yield ev.mix(env, logger)
 }
