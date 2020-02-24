@@ -4,10 +4,11 @@ import sbt.librarymanagement.ModuleID
 object Build {
   object Versions {
     val zio        = "1.0.0-RC17"
-    val doobie     = "0.8.8"
-    val circe      = "0.13.0"
     val cats       = "2.0.0"
     val catsEffect = "2.0.0"
+    val zioMacros  = "0.6.2"
+    val doobie     = "0.8.8"
+    val circe      = "0.13.0"
     val pureConfig = "0.12.2"
     val http4s     = "0.21.1"
   }
@@ -15,7 +16,7 @@ object Build {
   val dependencies: Seq[ModuleID] = Seq(
     "dev.zio"                    %% "zio"                  % Versions.zio,
     "dev.zio"                    %% "zio-interop-cats"     % (Versions.catsEffect + ".0-RC10"),
-    "dev.zio"                    %% "zio-macros-core"      % "0.6.2",
+    "dev.zio"                    %% "zio-macros-core"      % Versions.zioMacros,
     "dev.zio"                    %% "zio-logging-slf4j"    % "0.2.1",
     "org.tpolecat"               %% "doobie-core"          % Versions.doobie,
     "org.tpolecat"               %% "doobie-postgres"      % Versions.doobie,
@@ -25,6 +26,7 @@ object Build {
     "org.http4s"                 %% "http4s-blaze-server"  % Versions.http4s,
     "org.http4s"                 %% "http4s-circe"         % Versions.http4s,
     "io.circe"                   %% "circe-core"           % Versions.circe,
+    "io.circe"                   %% "circe-literal"        % Versions.circe,
     "io.circe"                   %% "circe-generic"        % Versions.circe,
     "io.circe"                   %% "circe-generic-extras" % Versions.circe,
     "io.circe"                   %% "circe-parser"         % Versions.circe,
@@ -35,6 +37,8 @@ object Build {
     "com.lihaoyi"                %% "sourcecode"           % "0.1.7",
     "org.postgresql"             % "postgresql"            % "42.2.8",
     "com.github.java-json-tools" % "json-schema-validator" % "2.2.12",
+    "dev.zio"                    %% "zio-test"             % Versions.zio % "test",
+    "dev.zio"                    %% "zio-test-sbt"         % Versions.zio % "test",
     compilerPlugin("org.typelevel" %% "kind-projector"     % "0.11.0" cross CrossVersion.full),
     compilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1")
   )

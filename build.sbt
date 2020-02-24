@@ -11,6 +11,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Build.dependencies,
     onLoadMessage := Build.welcomeMessage,
     resolvers += "jitpack".at("https://jitpack.io"),
+    testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework")),
     onChangedBuildSource := ReloadOnSourceChanges
   )
   .enablePlugins(
